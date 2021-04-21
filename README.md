@@ -1,11 +1,13 @@
 SeerTCPTest
 ===
 
+
+
 源码及 QT 工程, 可作例程参考
 
 email: support@seer-group.com
 
-
+![image](https://github.com/seer-robotics/SeerTCPTest/blob/master/Previews/2021-04-21-131046.gif)
 
 ## 推荐配置环境(开发时的环境)
 操作系统：Win10 x64
