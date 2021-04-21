@@ -211,7 +211,6 @@ void SCTcpToolWidget::slotChangedText(bool isOk,int revCommand,
             }
             file.close();
         }
-
     }else{
 
         slotPrintInfo(tr(" <font color=\"red\">"
