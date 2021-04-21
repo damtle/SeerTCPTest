@@ -1,7 +1,7 @@
 SeerTCPTest
 ===
 
-executable file under window 10(window 10 可执行文件):win_x64_bin/SeerTools.exe
+Executable file under window 10(window 10 可执行文件):win_x64_bin/SeerTools.exe
 ![image](https://github.com/seer-robotics/SeerTCPTest/blob/master/Previews/2021-04-21-131046.gif)
 
 源码及 QT 工程, 可作例程参考
