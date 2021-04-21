@@ -6,32 +6,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1160</width>
-    <height>762</height>
+    <width>1010</width>
+    <height>705</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>网络协议测试工具</string>
+   <string>Network protocol test tool</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget{
-	
-	font: 10pt &quot;微软雅黑&quot;;
-}</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="styleSheet">
-      <string notr="true">font: 18pt &quot;微软雅黑&quot;;</string>
-     </property>
-     <property name="text">
-      <string>SEER 网络协议测试工具</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButton_en">
+       <property name="text">
+        <string>English</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButton_ch">
+       <property name="text">
+        <string>中文</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QTabWidget" name="tabWidget">
@@ -40,15 +55,21 @@
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>机器人连接</string>
+       <string>TCP</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
         <widget class="QSplitter" name="splitter_2">
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
          <widget class="QSplitter" name="splitter">
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -60,7 +81,7 @@
             </sizepolicy>
            </property>
            <property name="title">
-            <string>请求</string>
+            <string>Request</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
@@ -78,135 +99,89 @@
               <item row="0" column="1">
                <widget class="QLineEdit" name="lineEdit_ip">
                 <property name="text">
-                 <string>127.0.0.1</string>
+                 <string>192.168.192.5</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_3">
                 <property name="text">
-                 <string>端口号:</string>
+                 <string>Port:</string>
                 </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="comboBox_port">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>19204</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19205</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19206</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19207</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19208</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19209</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19210</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>19200</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_9">
                 <property name="text">
-                 <string>报文类型（API编号）:</string>
+                 <string>Type:</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_10">
-                <item>
-                 <widget class="QLineEdit" name="lineEdit_sendCommand">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>IBeamCursor</cursorShape>
-                  </property>
-                  <property name="mouseTracking">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="readOnly">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="comboBox_sendCommand">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QLineEdit" name="lineEdit_port">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>IBeamCursor</cursorShape>
-                  </property>
-                  <property name="mouseTracking">
-                   <bool>false</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="readOnly">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="comboBox_port">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="lineEdit_number"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_4">
+               <widget class="QLineEdit" name="lineEdit_sendCommand">
                 <property name="text">
-                 <string>序号：</string>
+                 <string>1100</string>
                 </property>
                </widget>
               </item>
               <item row="3" column="0">
-               <widget class="QLabel" name="label_13">
+               <widget class="QLabel" name="label_4">
                 <property name="text">
-                 <string>API名称：</string>
+                 <string>Number：</string>
                 </property>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QComboBox" name="comboBox_commandName">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
+               <widget class="QLineEdit" name="lineEdit_number">
+                <property name="text">
+                 <string>0</string>
                 </property>
                </widget>
               </item>
@@ -225,7 +200,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>超时时间:</string>
+                   <string>Overtime time (ms):</string>
                   </property>
                  </widget>
                 </item>
@@ -238,14 +213,7 @@
                    <number>99999999</number>
                   </property>
                   <property name="value">
-                   <number>3000</number>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>ms</string>
+                   <number>6000</number>
                   </property>
                  </widget>
                 </item>
@@ -254,40 +222,10 @@
               <item>
                <widget class="QCheckBox" name="checkBox_timeOut">
                 <property name="text">
-                 <string>指令超时</string>
+                 <string>Time out</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_10">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>定时(ms):</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="spinBox_queryTime">
-                <property name="maximum">
-                 <number>9999</number>
-                </property>
-                <property name="value">
-                 <number>500</number>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_queryTime">
-                <property name="text">
-                 <string>定时发送</string>
                 </property>
                </widget>
               </item>
@@ -298,14 +236,14 @@
               <item>
                <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>数据区:</string>
+                 <string>Data area:</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QPushButton" name="pushButton_zipFile">
                 <property name="text">
-                 <string>选择发送的zip文件</string>
+                 <string>Select the file to send</string>
                 </property>
                </widget>
               </item>
@@ -324,22 +262,53 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
-               <widget class="QLabel" name="label_11">
+               <widget class="QPushButton" name="pushButton_connect">
                 <property name="text">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;如有需要，请参考：&lt;a href=&quot;https://docs.seer-group.com/robokit_netprotocol/663329&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Robokit NetProtocol TCP API&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>Connect</string>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="openExternalLinks">
+                <property name="checkable">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_connectAndSend">
+               <widget class="QPushButton" name="pushButton_send">
                 <property name="text">
-                 <string>发送</string>
+                 <string>Send</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QLabel" name="label_10">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Timing (ms):</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="spinBox_queryTime">
+                <property name="maximum">
+                 <number>9999</number>
+                </property>
+                <property name="value">
+                 <number>500</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_queryTime">
+                <property name="text">
+                 <string>Timed sending</string>
                 </property>
                </widget>
               </item>
@@ -355,7 +324,7 @@
             </sizepolicy>
            </property>
            <property name="title">
-            <string>响应</string>
+            <string>Response</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
@@ -370,21 +339,28 @@
               <item>
                <widget class="QLabel" name="label_12">
                 <property name="text">
-                 <string>数据区:</string>
+                 <string>Data area:</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="checkBox_revHex">
                 <property name="text">
-                 <string>十六进制</string>
+                 <string>Hex</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="checkBox_saveFile">
                 <property name="text">
-                 <string>保存到文件（SeerReceive.temp）</string>
+                 <string>Save to file</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_openFolder">
+                <property name="text">
+                 <string>Open folder</string>
                 </property>
                </widget>
               </item>
@@ -399,7 +375,7 @@
                </sizepolicy>
               </property>
               <property name="readOnly">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -426,7 +402,7 @@
              <item>
               <widget class="QCheckBox" name="checkBox_automatically">
                <property name="text">
-                <string>自动滚动</string>
+                <string>Auto scroll</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -436,7 +412,7 @@
              <item>
               <widget class="QPushButton" name="pushButton_clearInfo">
                <property name="text">
-                <string>清空</string>
+                <string>Clear</string>
                </property>
               </widget>
              </item>
@@ -445,7 +421,7 @@
            <item>
             <widget class="QTextEdit" name="textEdit_info">
              <property name="readOnly">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -458,17 +434,47 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;© 2020 SEER &lt;a href=&quot;https://github.com/seer-robotics/SeerTCPTest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Source&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="openExternalLinks">
-      <bool>true</bool>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://docs.seer-group.com/robokit_netprotocol/663329&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Robokit NetProtocol TCP API&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="openExternalLinks">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/seer-robotics/SeerTCPTest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Source&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="openExternalLinks">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

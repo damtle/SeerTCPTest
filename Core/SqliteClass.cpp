@@ -9,7 +9,7 @@ SqliteClass::~SqliteClass()
     if(_pProtocolClass){
         delete _pProtocolClass;
     }
-    //之所以这么写，是为了消除警告
+    //之所以这么写，是为了消除警告.
     //QSqlDatabasePrivate::removeDatabase: connection 'XXX' is still in use, all queries will cease to work
 
     QSqlDatabase dbTmp;
@@ -32,7 +32,7 @@ void SqliteClass::setErrorString(const QString &errorString)
     _errorString = errorString;
 }
 
-//建立一个数据库连接
+//建立一个数据库连接.
 bool SqliteClass::createConnection(const QString & filePath)
 {
     QFileInfo fileInfo(filePath);
@@ -41,14 +41,14 @@ bool SqliteClass::createConnection(const QString & filePath)
         return false;
     }
     _connectionName = fileInfo.completeBaseName();
-    //fileInfo.completeBaseName() 数据库的文件名，来作为连接名(如果多个db名字一致，则修改此处)
+    //fileInfo.completeBaseName() 数据库的文件名，来作为连接名(如果多个db名字一致，则修改此处).
     QSqlDatabase db = QSqlDatabase::database(_connectionName);
 
-    if(!db.isValid()){ //如果db不可用，则添加
+    if(!db.isValid()){ //如果db不可用，则添加.
         db = QSqlDatabase::addDatabase("QSQLITE", _connectionName);
         db.setDatabaseName(fileInfo.absoluteFilePath());
     }
-    if( !db.open()){ //判断db是否已经打开
+    if( !db.open()){ //判断db是否已经打开.
         setErrorString(tr("Sqlite not open: %1").arg(fileInfo.absoluteFilePath()));
         return false;
     }
@@ -59,13 +59,13 @@ QSqlDatabase  SqliteClass::dbConnection()
 {
     QSqlDatabase db = QSqlDatabase::database(_connectionName);
 
-    if( !db.open()){ //判断db是否已经打开
+    if( !db.open()){ //判断db是否已经打开.
         setErrorString(tr("Sqlite not open").arg(db.connectionName()));
     }
     return db;
 }
 
-/** 获取指令数据类
+/** 获取指令数据类.
  * @brief ProtocolClass::getProtocol
  * @return
  */
@@ -77,7 +77,7 @@ ProtocolClass * SqliteClass::getProtocol()
     return _pProtocolClass;
 }
 
-/** 查询指令库
+/** 查询指令库.
  * @brief SqliteClass::queryProtocol
  * @return
  */

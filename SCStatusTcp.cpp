@@ -1,37 +1,43 @@
 ﻿#include "SCStatusTcp.h"
 #include "SCHeadData.h"
-#include <QNetworkProxy>
 
-SCStatusTcp::SCStatusTcp(QObject *parent) : QObject(parent)
+
+SCStatusTcp::SCStatusTcp(QObject *parent) : QObject(parent),
+    _tcpSocket(Q_NULLPTR)
 {
-}
 
+}
 SCStatusTcp::~SCStatusTcp()
 {
     releaseTcpSocket();
     if(_tcpSocket){
-        _tcpSocket->deleteLater();
+        delete _tcpSocket;
     }
 }
-
+/** 释放tcpSocket
+ * @brief SCStatusTcp::releaseTcpSocket
+ */
 void SCStatusTcp::releaseTcpSocket()
 {
     if(_tcpSocket){
 
-        //Aborts the current connection and resets the socket.
-        //Unlike disconnectFromHost(), this function immediately closes the socket, discarding any pending data in the write buffer.
+        if(_tcpSocket->isOpen()){
+            _tcpSocket->close();
+        }
         _tcpSocket->abort();
     }
 }
-
+/** 连接
+ * @brief SCStatusTcp::connectHost
+ * @param ip
+ * @param port
+ * @return
+ */
 int SCStatusTcp::connectHost(const QString&ip,quint16 port)
 {
     int ret = 0;
     if(!_tcpSocket){
         _tcpSocket = new QTcpSocket(this);
-        //禁用代理
-        _tcpSocket->setProxy(QNetworkProxy::NoProxy);
-        //连接槽
         connect(_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveTcpReadyRead()));
         connect(_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
                 this->parent(), SLOT(stateChanged(QAbstractSocket::SocketState)));
@@ -39,8 +45,9 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
                 SLOT(receiveTcpError(QAbstractSocket::SocketError)));
     }
     if(_tcpSocket->isOpen()
-            && (_tcpSocket->state()==QAbstractSocket::ConnectedState
-                || _tcpSocket->state()==QAbstractSocket::ConnectingState)){
+            &&(_tcpSocket->state()==QAbstractSocket::ConnectedState
+               ||_tcpSocket->state()==QAbstractSocket::ConnectingState)){
+        _tcpSocket->close();
         _tcpSocket->abort();
         qDebug()<<"----close _tcpSocket----\n";
         ret = 1;
@@ -52,62 +59,64 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
     }
     return ret;
 }
-
+/** TCP请求
+ * @brief SCStatusTcp::writeTcpData
+ * @param sendCommand 报文类型.
+ * @param sendData 数据区数据.
+ * @param number 序号.
+ * @return
+ */
 bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
                                const QByteArray &sendData,
                                uint16_t &number)
 {
-    //已发送
+    //已发送.
     _oldSendCommand = sendCommand;
     _oldNumber = number;
-
-    //数据区长度
+    //数据区长度.
     int size = 0;
-
-    //报文头部数据
+    //报文头部数据.
     uint8_t* headBuf = Q_NULLPTR;
     int headSize = 0;
-
-    //发送的全部数据
+    //发送的全部数据.
     SeerData* seerData = Q_NULLPTR;
-
-    //开始计时
+    //开始计时.
     _time.start();
 
-
-    if (sendData.isEmpty()){
-
+    //根据数据区数据进行数据转换.
+    if(sendData.isEmpty()){
         headSize = sizeof(SeerHeader);
         headBuf = new uint8_t[headSize];
         seerData = (SeerData*)headBuf;
-        size = seerData->setData(sendCommand, Q_NULLPTR, 0, number);
-
+        size = seerData->setData(sendCommand,Q_NULLPTR,0,number);
     }else{
-
         std::string json_str = sendData.toStdString();
         headSize = sizeof(SeerHeader) + json_str.length();
         headBuf = new uint8_t[headSize];
         seerData = (SeerData*)headBuf;
-        size = seerData->setData(sendCommand, (uint8_t*)json_str.data(), json_str.length(), number);
+        size = seerData->setData(sendCommand,
+                                 (uint8_t*)json_str.data(),
+                                 json_str.length(),
+                                 number);
     }
     //---------------------------------------
-    //发送的所有数据
-    QByteArray tempA = QByteArray::fromRawData((char*)seerData, size);
+    //发送的所有数据.
+    QByteArray tempA = QByteArray::fromRawData((char*)seerData,size);
     qDebug()<<"send:"<<QString(tempA)<<"  Hex:"<<tempA.toHex()<<"seerData:size:"<<size;
     QString dataHex = "";
     if(size<=2048){
         dataHex = hexToQString(sendData.toHex());
     }else{
-        dataHex =QStringLiteral("数据大于2048字节，不打印信息.");
+        dataHex = tr("If the data is greater than 2048 bytes, no information will be printed");
     }
-    //打印信息
-    QString info = QString(QStringLiteral("\n%1--------- 请求 ---------\n"
-                                          "报文类型:%2 (0x%3) \n"
-                                          "端口: %4\n"
-                                          "序号: %5 (0x%6)\n"
-                                          "头部十六进制: %7 \n"
-                                          "数据区[size:%8 (0x%9)]: %10 \n"
-                                          "数据区十六进制: %11 "))
+    //打印信息.
+    QString info = tr("\n%1---------[Request] ---------\n"
+                      "Type:%2 (0x%3) \n"
+                      "Port: %4\n"
+                      "Number: %5 (0x%6)\n"
+                      "Head hex: %7 \n"
+                      "Data[size:%8 (0x%9)]: %10 \n"
+                      "Data hex: %11 ")
             .arg(getCurrentDateTime())
             .arg(sendCommand)
             .arg(QString::number(sendCommand,16))
@@ -127,56 +136,53 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
 
     //-------------
     qDebug()<<"TCP:_timeOut:"<<_timeOut;
-    //如果_timeOut = 0表示不监听超时
-    if (0 == _timeOut)
-    {
+    //如果_timeOut = 0表示不监听超时.
+    if(0 == _timeOut){
         return true;
     }
 
-    //等待写入
+    //等待写入.
     if(!_tcpSocket->waitForBytesWritten(_timeOut)){
         _lastError = tr("waitForBytesWritten: time out!");
         return false;
     }
-    //等待读取
+    //等待读取.
     if(!_tcpSocket->waitForReadyRead(_timeOut)){
         _lastError = tr("waitForReadyRead: time out!");
         return false;
     }
     return true;
 }
-
 void SCStatusTcp::receiveTcpReadyRead()
 {
-    //读取所有数据
-    //返回的数据大小不定,需要使用_lastMessage成员变量存放多次触发槽读取的数据。
-
+    //读取所有数据.
+    //返回的数据大小不定,需要使用_lastMessage成员变量存放多次触发槽读取的数据.
     QByteArray message = _tcpSocket->readAll();
     message = _lastMessage + message;
     int size = message.size();
 
     while(size > 0){
         char a0 = message.at(0);
-        if (uint8_t(a0) == 0x5A){//检测第一位是否为0x5A
-            if (size >= 16) {//返回的数据最小长度为16位,如果大小小于16则数据不完整等待再次读取
+        if (uint8_t(a0) == 0x5A){//检测第一位是否为0x5A.
+            if (size >= 16) {//返回的数据最小长度为16位,如果大小小于16则数据不完整等待再次读取.
                 SeerHeader* header = new SeerHeader;
                 memcpy(header, message.data(), 16);
 
-                uint32_t data_size;//返回所有数据总长值
-                uint16_t revCommand;
-                uint16_t number;//返回序号
+                uint32_t data_size;//返回所有数据总长值.
+                uint16_t revCommand;//返回报文数据类型.
+                uint16_t number;//返回序号.
                 qToBigEndian(header->m_length,(uint8_t*)&(data_size));
                 qToBigEndian(header->m_type, (uint8_t*)&(revCommand));
                 qToBigEndian(header->m_number, (uint8_t*)&(number));
                 delete header;
 
-                int remaining_size = size - 16;//所有数据总长度 - 头部总长度16 = 数据区长度
-                //如果返回数据长度值 大于 已读取数据长度 表示数据还未读取完整，跳出循环等待再次读取.
+                int remaining_size = size - 16;//所有数据总长度 - 头部总长度16 = 数据区长度.
+                //如果返回数据长度值 大于 已读取数据长度 表示数据还未读取完整，跳出循环等待再次读取..
                 if (data_size > remaining_size) {
                     _lastMessage = message;
 
                     break;
-                }else{//返回数据长度值 大于等于 已读取数据，开始解析
+                }else{//返回数据长度值 大于等于 已读取数据，开始解析.
                     QByteArray tempMessage;
                     if(_lastMessage.isEmpty()){
                         tempMessage = message;
@@ -184,23 +190,23 @@ void SCStatusTcp::receiveTcpReadyRead()
                         tempMessage = _lastMessage;
                     }
                     QByteArray headB = message.left(16);
-                    //截取报头16位后面的数据区数据
-                    QByteArray json_data = message.mid(16, data_size);
+                    //截取报头16位后面的数据区数据.
+                    QByteArray json_data = message.mid(16,data_size);
                     qDebug()<<"rev:"<<QString(json_data)<<"  Hex:"<<json_data.toHex();
                     //--------------------------------------
                     QString dataHex = "";
                     if(size<=2048){
                         dataHex = hexToQString(json_data.toHex());
                     }else{
-                        dataHex = QStringLiteral("数据大于2048字节，不打印信息.");
+                        dataHex = tr("If the data is greater than 2048 bytes, no information will be printed");
                     }
-                    //输出打印信息
-                    QString info = QString(QStringLiteral("%1--------- 响应 ---------\n"
-                                                          "报文类型:%2 (%3) \n"
-                                                          "序号: %4 (0x%5)\n"
-                                                          "头部十六进制: %6\n"
-                                                          "数据区[size:%7 (0x%8)]: %9 \n"
-                                                          "数据区十六进制: %10 \n" ))
+                    //输出打印信息.
+                    QString info = QString("%1---------[Response]---------\n"
+                                           "Type:%2 (%3) \n"
+                                           "Number: %4 (0x%5)\n"
+                                           "Head hex: %6\n"
+                                           "Data[size:%7 (0x%8)]: %9 \n"
+                                           "Data hex: %10 \n")
                             .arg(getCurrentDateTime())
                             .arg(revCommand)
                             .arg(QString::number(revCommand,16))
@@ -215,11 +221,11 @@ void SCStatusTcp::receiveTcpReadyRead()
                     emit sigPrintInfo(info);
                     int msTime = _time.elapsed();
                     //----------------------------------------
-                    //输出返回信息
+                    //输出返回信息.
                     emit sigChangedText(true,revCommand,
                                         json_data,json_data.toHex(),
                                         number,msTime);
-                    //截断message,清空_lastMessage
+                    //截断message,清空_lastMessage.
                     message = message.right(remaining_size - data_size);
                     size = message.size();
                     _lastMessage.clear();
@@ -230,8 +236,8 @@ void SCStatusTcp::receiveTcpReadyRead()
                 break;
             }
         }else{
-            //报头数据错误
-            setLastError("Seer Header Error !!!");
+            //报头数据错误.
+            setLastError("Header Error !!!");
             message = message.right(size - 1);
             size = message.size();
             int msTime = _time.elapsed();
@@ -252,6 +258,7 @@ void SCStatusTcp::setTimeOut(int timeOut)
     _timeOut = timeOut;
 }
 
+
 QTcpSocket *SCStatusTcp::tcpSocket() const
 {
     return _tcpSocket;
@@ -271,12 +278,19 @@ QString SCStatusTcp::lastError() const
 {
     return _lastError;
 }
-
+/** 获取当前时间
+ * @brief SCStatusTcp::getCurrentDateTime
+ * @return
+ */
 QString SCStatusTcp::getCurrentDateTime()const
 {
     return QDateTime::currentDateTime().toString("[yyyyMMdd|hh:mm:ss:zzz]:");
 }
-
+/** 16进制全部显示大写
+ * @brief SCStatusTcp::hexToQString
+ * @param b
+ * @return
+ */
 QString SCStatusTcp::hexToQString(const QByteArray &b)
 {
     QString str;
