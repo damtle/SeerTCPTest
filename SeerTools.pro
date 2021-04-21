@@ -8,7 +8,7 @@ QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
-TRANSLATIONS += $$PWD/bin/Ch.ts
+TRANSLATIONS += $$PWD/resource/Ch.ts
 
 TARGET = SeerTools
 TEMPLATE = app
@@ -19,14 +19,12 @@ DESTDIR = $$PWD/bin
 SOURCES += main.cpp\
         SCTcpToolWidget.cpp \
     SCStatusTcp.cpp \
-    Core/BaseThread.cpp \
-    Core/SqliteClass.cpp
+    Core/BaseThread.cpp
 
 HEADERS  += SCTcpToolWidget.h \
     SCStatusTcp.h \
     SCHeadData.h \
-    Core/BaseThread.h \
-    Core/SqliteClass.h
+    Core/BaseThread.h
 
 FORMS   += SCTcpToolWidget.ui
 

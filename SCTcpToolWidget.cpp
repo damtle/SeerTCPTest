@@ -309,6 +309,8 @@ void SCTcpToolWidget::on_toolButton_en_clicked()
 {
     if(_translator){
         qApp->removeTranslator(_translator);
+        delete _translator;
+        _translator = Q_NULLPTR;
     }
     ui->retranslateUi(this);
 }
@@ -317,7 +319,7 @@ void SCTcpToolWidget::on_toolButton_ch_clicked()
 {
     if(!_translator){
         _translator = new QTranslator(this);
-        _translator->load(QString("Ch.qm"));
+        _translator->load(QString(":/resource/Ch.qm"));
         qApp->installTranslator(_translator);
     }
     ui->retranslateUi(this);

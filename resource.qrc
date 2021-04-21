@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>resource/Roboshop.db</file>
+        <file>resource/Ch.qm</file>
+        <file>resource/Ch.ts</file>
     </qresource>
 </RCC>
