@@ -51,7 +51,7 @@ void SCTcpToolWidget::on_pushButton_connect_clicked()
 {
     switch (_scStatusTcp->connectHost(ui->lineEdit_ip->text(),ui->comboBox_port->currentText().toInt())) {
     case 1:
-        ui->pushButton_connect->setText(tr("Start connect"));
+        ui->pushButton_connect->setText(tr("Connect"));
         break;
 
     default:

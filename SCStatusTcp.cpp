@@ -107,7 +107,7 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
     if(size<=2048){
         dataHex = hexToQString(sendData.toHex());
     }else{
-        dataHex = tr("If the data is greater than 2048 bytes, no information will be printed");
+        dataHex = tr("If the data region length is larger than 2048 bytes, it will not be printed");
     }
     //打印信息.
     QString info = tr("\n%1---------[Request] ---------\n"
@@ -198,7 +198,7 @@ void SCStatusTcp::receiveTcpReadyRead()
                     if(size<=2048){
                         dataHex = hexToQString(json_data.toHex());
                     }else{
-                        dataHex = tr("If the data is greater than 2048 bytes, no information will be printed");
+                        dataHex = tr("If the data region length is larger than 2048 bytes, it will not be printed");
                     }
                     //输出打印信息.
                     QString info = QString("%1---------[Response]---------\n"

@@ -200,7 +200,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Overtime time (ms):</string>
+                   <string>Timeout(ms):</string>
                   </property>
                  </widget>
                 </item>
@@ -222,7 +222,7 @@
               <item>
                <widget class="QCheckBox" name="checkBox_timeOut">
                 <property name="text">
-                 <string>Time out</string>
+                 <string>Timeout</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
@@ -236,7 +236,7 @@
               <item>
                <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>Data area:</string>
+                 <string>Data region:</string>
                 </property>
                </widget>
               </item>
@@ -339,7 +339,7 @@
               <item>
                <widget class="QLabel" name="label_12">
                 <property name="text">
-                 <string>Data area:</string>
+                 <string>Data region:</string>
                 </property>
                </widget>
               </item>
