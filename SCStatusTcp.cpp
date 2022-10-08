@@ -57,6 +57,9 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
         _port = port;
         ret = 0;
     }
+    //清空缓冲区
+    if(_tcpSocket->isOpen())
+        _tcpSocket->readAll();
     return ret;
 }
 /** TCP请求
@@ -176,7 +179,7 @@ void SCStatusTcp::receiveTcpReadyRead()
                 qToBigEndian(header->m_number, (uint8_t*)&(number));
                 delete header;
 
-                int remaining_size = size - 16;//所有数据总长度 - 头部总长度16 = 数据区长度.
+                uint32_t remaining_size = size - 16;//所有数据总长度 - 头部总长度16 = 数据区长度.
                 //如果返回数据长度值 大于 已读取数据长度 表示数据还未读取完整，跳出循环等待再次读取..
                 if (data_size > remaining_size) {
                     _lastMessage = message;
