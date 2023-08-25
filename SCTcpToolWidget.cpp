@@ -134,6 +134,8 @@ void SCTcpToolWidget::on_pushButton_send_clicked()
         //数据区数据.
         QString sendDataStr = ui->textEdit_sendData->toPlainText();
         QByteArray sendData = sendDataStr.toLatin1();
+        //Json 区数据
+        QByteArray jsonData = ui->textEdit_JSON->toPlainText().toLocal8Bit();
         //发送数据size.
         quint64 sendDataSize = sendData.size();
         //如果数据区是文件直接打开读取发送.
@@ -153,7 +155,7 @@ void SCTcpToolWidget::on_pushButton_send_clicked()
         //清理接收数据区域.
         ui->textEdit_revData->clear();
         //发送数据.
-        if(!_scStatusTcp->writeTcpData(sendCommand,sendData,number)){
+        if(!_scStatusTcp->writeTcpData(sendCommand,jsonData,sendData,number)){
             slotPrintInfo(tr("<font color=\"red\">"
                              "%1--------- Send error----------\n"
                              "Type:%2  \n"
@@ -241,9 +243,9 @@ void SCTcpToolWidget::slotPrintInfo(QString info)
  */
 void SCTcpToolWidget::on_pushButton_clearInfo_clicked()
 {
-    if(ui->textEdit_info->document()){
-        ui->textEdit_info->document()->clear();
-    }
+//    if(ui->textEdit_info->document()){
+//        ui->textEdit_info->document()->clear();
+//    }
     ui->textEdit_info->clear();
 }
 

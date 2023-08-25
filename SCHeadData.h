@@ -32,16 +32,39 @@ public:
         return sizeof(SeerHeader) + m_header.m_length;
     }
 
-    int setData(uint16_t type, uint8_t* data = NULL, int size = 0, uint16_t number = 0x00){
+
+    int setData(uint16_t type,
+                uint8_t* data = NULL,
+                int size = 0,
+                uint16_t jsonSize = 0,
+                uint16_t number = 0x00){
+
         m_header.m_header = 0x5A;
         m_header.m_version = 0x01;
-        qToBigEndian(type, (uint8_t*)&(m_header.m_type));
-        qToBigEndian(number, (uint8_t*)&(m_header.m_number));
-        memset(m_header.m_reserved,0, 6);
-        if (data != NULL) {
+
+        qToBigEndian(type,(uint8_t*)&(m_header.m_type));
+        qToBigEndian(number,(uint8_t*)&(m_header.m_number));
+        memset(m_header.m_reserved,0,6);
+
+        //把转换后大端uint16_t拆分2个uint8_t.
+        uint8_t u0 = (uint8_t)(m_header.m_type & 0xFFu);//取低八位.
+        uint8_t u1 = (uint8_t)((m_header.m_type >> 8u) & 0xFFu);
+        //保留区把发送的指令，放入0,1位).
+        m_header.m_reserved[0] = u0;
+        m_header.m_reserved[1] = u1;
+        //把json区域长度转换成大端uint6_t,再拆分成两个uint8_t放入保留区2、3位.
+        if(jsonSize > 0){
+            uint16_t bigJsonSize = 0;
+            qToBigEndian(jsonSize,(uint8_t*)&(bigJsonSize));
+            uint8_t u2 = (uint8_t)(bigJsonSize & 0xFFu);
+            uint8_t u3 = (uint8_t)((bigJsonSize >> 8u) & 0xFFu);
+            m_header.m_reserved[2] = u2;
+            m_header.m_reserved[3] = u3;
+        }
+        if (data != NULL){
             memcpy(m_data, data, size);
         }
-        qToBigEndian(size, (uint8_t*)&(m_header.m_length));
+        qToBigEndian(size,(uint8_t*)&(m_header.m_length));
         return 16 + size;
     }
 private:

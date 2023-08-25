@@ -20,6 +20,7 @@ public:
     void setLastError(const QString &lastError);
 
     bool writeTcpData(uint16_t sendCommand,
+                      const QByteArray &jsonData,
                       const QByteArray &sendData,
                       uint16_t &number);
 

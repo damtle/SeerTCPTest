@@ -10,6 +10,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 TRANSLATIONS += $$PWD/resource/Ch.ts
 
+TRANSLATIONS += \
+    zh.ts
+
 TARGET = SeerTools
 TEMPLATE = app
 
@@ -32,3 +35,5 @@ win32:RC_FILE = ICO.rc
 
 RESOURCES += \
     resource.qrc
+
+DISTFILES +=

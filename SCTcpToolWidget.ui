@@ -260,6 +260,16 @@
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>JSON (Only specific API use)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTextEdit" name="textEdit_JSON"/>
+            </item>
+            <item>
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
                <widget class="QPushButton" name="pushButton_connect">

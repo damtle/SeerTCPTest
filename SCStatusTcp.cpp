@@ -62,14 +62,17 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
         _tcpSocket->readAll();
     return ret;
 }
+
 /** TCP请求
  * @brief SCStatusTcp::writeTcpData
  * @param sendCommand 报文类型.
  * @param sendData 数据区数据.
+ * @param jsonData Json区数据.
  * @param number 序号.
  * @return
  */
 bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
+                               const QByteArray &jsonData,
                                const QByteArray &sendData,
                                uint16_t &number)
 {
@@ -86,20 +89,29 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
     //开始计时.
     _time.start();
 
+    //json数据
+    uint16_t jsonSize = 0;
+    if(!jsonData.isEmpty()){
+        jsonSize = jsonData.toStdString().length();
+    }
+    QByteArray totalData = jsonData + sendData;
+
+
     //根据数据区数据进行数据转换.
-    if(sendData.isEmpty()){
+    if(totalData.isEmpty()){
         headSize = sizeof(SeerHeader);
         headBuf = new uint8_t[headSize];
         seerData = (SeerData*)headBuf;
-        size = seerData->setData(sendCommand,Q_NULLPTR,0,number);
+        size = seerData->setData(sendCommand,Q_NULLPTR,0,0,number);
     }else{
-        std::string json_str = sendData.toStdString();
-        headSize = sizeof(SeerHeader) + json_str.length();
+        std::string totalDataStr = totalData.toStdString();
+        headSize = sizeof(SeerHeader) + totalDataStr.length();
         headBuf = new uint8_t[headSize];
         seerData = (SeerData*)headBuf;
         size = seerData->setData(sendCommand,
-                                 (uint8_t*)json_str.data(),
-                                 json_str.length(),
+                                 (uint8_t*)totalDataStr.data(),
+                                 totalDataStr.length(),
+                                 jsonSize,
                                  number);
     }
     //---------------------------------------
@@ -119,7 +131,8 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
                       "Number: %5 (0x%6)\n"
                       "Head hex: %7 \n"
                       "Data[size:%8 (0x%9)]: %10 \n"
-                      "Data hex: %11 ")
+                      "Data hex: %11 \n"
+                      "JSON[size:%12]: %13")
             .arg(getCurrentDateTime())
             .arg(sendCommand)
             .arg(QString::number(sendCommand,16))
@@ -130,7 +143,9 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
             .arg(sendData.size())
             .arg(QString::number(sendData.size(),16))
             .arg(QString(sendData))
-            .arg(dataHex);
+            .arg(dataHex)
+            .arg(jsonSize)
+            .arg(QString(jsonData));
 
     emit sigPrintInfo(info);
     //---------------------------------------
@@ -177,6 +192,21 @@ void SCStatusTcp::receiveTcpReadyRead()
                 qToBigEndian(header->m_length,(uint8_t*)&(data_size));
                 qToBigEndian(header->m_type, (uint8_t*)&(revCommand));
                 qToBigEndian(header->m_number, (uint8_t*)&(number));
+
+                //json区长度.
+                uint16_t jsonSize = 0;
+                {
+                    uint8_t u2 = header->m_reserved[2];
+                    uint8_t u3 = header->m_reserved[3];
+                    uint16_t tempJsonSize = u2;
+                    tempJsonSize = tempJsonSize << 8;
+                    tempJsonSize = tempJsonSize | u3;
+                    if(tempJsonSize <0 || tempJsonSize > 65535){
+                        tempJsonSize = 0;
+                    }
+                    jsonSize = tempJsonSize;
+                }
+
                 delete header;
 
                 uint32_t remaining_size = size - 16;//所有数据总长度 - 头部总长度16 = 数据区长度.
@@ -193,13 +223,27 @@ void SCStatusTcp::receiveTcpReadyRead()
                         tempMessage = _lastMessage;
                     }
                     QByteArray headB = message.left(16);
+                    QByteArray jsonData;
+                    QByteArray byteData;
+
+
                     //截取报头16位后面的数据区数据.
-                    QByteArray json_data = message.mid(16,data_size);
-                    qDebug()<<"rev:"<<QString(json_data)<<"  Hex:"<<json_data.toHex();
+                    {
+                        QByteArray totalData = message.mid(16,data_size);
+                        if(jsonSize > 0){
+                            jsonData =  totalData.mid(0,jsonSize);
+                            qDebug()<<">>>>>>>>>>>>>>>>>>>>>>jsonSize:"<<jsonSize
+                                   <<"tempJsonData:"<<QString("[%1]").arg(QString(jsonData));
+                        }
+                        byteData =  totalData.mid(jsonSize,data_size - jsonSize);
+                        qDebug()<<"jsonData:"<<QString(jsonData)<<"revByteData:"<<QString(byteData)<<"  Hex:"<<byteData.toHex();
+                    }
+
+
                     //--------------------------------------
                     QString dataHex = "";
                     if(size<=2048){
-                        dataHex = hexToQString(json_data.toHex());
+                        dataHex = hexToQString(byteData.toHex());
                     }else{
                         dataHex = tr("If the data region length is larger than 2048 bytes, it will not be printed");
                     }
@@ -209,24 +253,27 @@ void SCStatusTcp::receiveTcpReadyRead()
                                            "Number: %4 (0x%5)\n"
                                            "Head hex: %6\n"
                                            "Data[size:%7 (0x%8)]: %9 \n"
-                                           "Data hex: %10 \n")
+                                           "Data hex: %10 \n"
+                                           "JSON[size:%11]: %12\n")
                             .arg(getCurrentDateTime())
                             .arg(revCommand)
                             .arg(QString::number(revCommand,16))
                             .arg(number)
                             .arg(QString::number(number,16))
                             .arg(hexToQString(headB.toHex()))
-                            .arg(json_data.size())
-                            .arg(QString::number(json_data.size(),16))
-                            .arg(QString(json_data))
-                            .arg(dataHex);
+                            .arg(byteData.size())
+                            .arg(QString::number(byteData.size(),16))
+                            .arg(QString(byteData))
+                            .arg(dataHex)
+                            .arg(jsonData.size())
+                            .arg(QString(jsonData));
 
                     emit sigPrintInfo(info);
                     int msTime = _time.elapsed();
                     //----------------------------------------
                     //输出返回信息.
                     emit sigChangedText(true,revCommand,
-                                        json_data,json_data.toHex(),
+                                        byteData,byteData.toHex(),
                                         number,msTime);
                     //截断message,清空_lastMessage.
                     message = message.right(remaining_size - data_size);

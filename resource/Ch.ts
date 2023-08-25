@@ -4,8 +4,8 @@
 <context>
     <name>SCStatusTcp</name>
     <message>
-        <location filename="../SCStatusTcp.cpp" line="110"/>
-        <location filename="../SCStatusTcp.cpp" line="201"/>
+        <location filename="../SCStatusTcp.cpp" line="113"/>
+        <location filename="../SCStatusTcp.cpp" line="204"/>
         <source>If the data region length is larger than 2048 bytes, it will not be printed</source>
         <translation>数据区长度大于 2048 字节，将不打印</translation>
     </message>
@@ -28,7 +28,7 @@ Data hex: %11 </source>
 数据区十六进制: %11 </translation>
     </message>
     <message>
-        <location filename="../SCStatusTcp.cpp" line="113"/>
+        <location filename="../SCStatusTcp.cpp" line="116"/>
         <source>
 %1---------[Request] ---------
 Type:%2 (0x%3) 
@@ -47,12 +47,12 @@ Data hex: %11 </source>
 数据区十六进制: %11 </translation>
     </message>
     <message>
-        <location filename="../SCStatusTcp.cpp" line="146"/>
+        <location filename="../SCStatusTcp.cpp" line="149"/>
         <source>waitForBytesWritten: time out!</source>
         <translation>waitForBytesWritten: 超时!</translation>
     </message>
     <message>
-        <location filename="../SCStatusTcp.cpp" line="151"/>
+        <location filename="../SCStatusTcp.cpp" line="154"/>
         <source>waitForReadyRead: time out!</source>
         <translation>waitForReadyRead: 超时!</translation>
     </message>
@@ -170,13 +170,23 @@ Data hex: %11 </source>
         <translation>超时</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="294"/>
+        <location filename="../SCTcpToolWidget.ui" line="265"/>
+        <source>JSON (Only specific API use)</source>
+        <translation>JSON (仅特定API使用)</translation>
+    </message>
+    <message>
+        <location filename="../SCTcpToolWidget.ui" line="304"/>
         <source>Timing (ms):</source>
         <translation>定时(ms):</translation>
     </message>
     <message>
+        <location filename="../SCTcpToolWidget.ui" line="451"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://seer-group.yuque.com/books/share/16f5a74f-7109-4cef-b5d2-cf1414f20089?# 《Robokit API 通信协议》&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Robokit NetProtocol TCP API&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../SCTcpToolWidget.ui" line="239"/>
-        <location filename="../SCTcpToolWidget.ui" line="342"/>
+        <location filename="../SCTcpToolWidget.ui" line="352"/>
         <source>Data region:</source>
         <translation>数据区:</translation>
     </message>
@@ -186,16 +196,16 @@ Data hex: %11 </source>
         <translation>选择文件发送</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="267"/>
-        <location filename="../SCTcpToolWidget.cpp" line="54"/>
-        <location filename="../SCTcpToolWidget.cpp" line="74"/>
-        <location filename="../SCTcpToolWidget.cpp" line="100"/>
-        <location filename="../SCTcpToolWidget.cpp" line="121"/>
+        <location filename="../SCTcpToolWidget.ui" line="277"/>
+        <location filename="../SCTcpToolWidget.cpp" line="56"/>
+        <location filename="../SCTcpToolWidget.cpp" line="76"/>
+        <location filename="../SCTcpToolWidget.cpp" line="102"/>
+        <location filename="../SCTcpToolWidget.cpp" line="123"/>
         <source>Connect</source>
         <translation>开始连接</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="277"/>
+        <location filename="../SCTcpToolWidget.ui" line="287"/>
         <source>Send</source>
         <translation>发送</translation>
     </message>
@@ -204,91 +214,86 @@ Data hex: %11 </source>
         <translation type="vanished">定时(ms):</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="311"/>
+        <location filename="../SCTcpToolWidget.ui" line="321"/>
         <source>Timed sending</source>
         <translation>定时发送</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="327"/>
+        <location filename="../SCTcpToolWidget.ui" line="337"/>
         <source>Response</source>
         <translation>响应</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="349"/>
+        <location filename="../SCTcpToolWidget.ui" line="359"/>
         <source>Hex</source>
         <translation>十六进制</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="356"/>
+        <location filename="../SCTcpToolWidget.ui" line="366"/>
         <source>Save to file</source>
         <translation>保存到文件</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="363"/>
+        <location filename="../SCTcpToolWidget.ui" line="373"/>
         <source>Open folder</source>
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="405"/>
+        <location filename="../SCTcpToolWidget.ui" line="415"/>
         <source>Auto scroll</source>
         <translation>自动滚动</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="415"/>
+        <location filename="../SCTcpToolWidget.ui" line="425"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.ui" line="441"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://docs.seer-group.com/robokit_netprotocol/663329&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Robokit NetProtocol TCP API&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../SCTcpToolWidget.ui" line="467"/>
+        <location filename="../SCTcpToolWidget.ui" line="477"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/seer-robotics/SeerTCPTest&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Source&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="82"/>
+        <location filename="../SCTcpToolWidget.cpp" line="84"/>
         <source>Connecting...</source>
         <translation>正在连接...</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="88"/>
+        <location filename="../SCTcpToolWidget.cpp" line="90"/>
         <source>Disconnect</source>
         <translation>断开连接</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="157"/>
+        <location filename="../SCTcpToolWidget.cpp" line="159"/>
         <source>&lt;font color=&quot;red&quot;&gt;%1--------- Send error----------
 Type:%2  
 Error: %3&lt;/font&gt; </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="216"/>
+        <location filename="../SCTcpToolWidget.cpp" line="218"/>
         <source> &lt;font color=&quot;red&quot;&gt;%1--------- Receive error----------
 Type:%2  
 Error: %3&lt;/font&gt; </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="168"/>
+        <location filename="../SCTcpToolWidget.cpp" line="170"/>
         <source> &lt;font color=&quot;red&quot;&gt;Unconnected:%1&lt;/font&gt; </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="210"/>
+        <location filename="../SCTcpToolWidget.cpp" line="212"/>
         <source> &lt;font color=&quot;red&quot;&gt;Open SeerReceive.temp failed&lt;/font&gt; </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="267"/>
+        <location filename="../SCTcpToolWidget.cpp" line="269"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../SCTcpToolWidget.cpp" line="267"/>
+        <location filename="../SCTcpToolWidget.cpp" line="269"/>
         <source>File(*.*)</source>
         <translation>文件(*.*)</translation>
     </message>
