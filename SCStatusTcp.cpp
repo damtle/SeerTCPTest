@@ -1,6 +1,7 @@
 ﻿#include "SCStatusTcp.h"
 #include "SCHeadData.h"
-#include "qdatetime.h"
+#include <QDateTime>
+#include <QNetworkProxy>
 
 SCStatusTcp::SCStatusTcp(QObject *parent) : QObject(parent),
     _tcpSocket(Q_NULLPTR)
@@ -38,6 +39,8 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
     int ret = 0;
     if(!_tcpSocket){
         _tcpSocket = new QTcpSocket(this);
+        //无代理，不加这行会导致开启 vpn 无法连接局域网设备.
+        _tcpSocket->setProxy(QNetworkProxy::NoProxy);
         connect(_tcpSocket, SIGNAL(readyRead()), this, SLOT(receiveTcpReadyRead()));
         connect(_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
                 this->parent(), SLOT(stateChanged(QAbstractSocket::SocketState)));
@@ -45,8 +48,8 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
                 SLOT(receiveTcpError(QAbstractSocket::SocketError)));
     }
     if(_tcpSocket->isOpen()
-            &&(_tcpSocket->state()==QAbstractSocket::ConnectedState
-               ||_tcpSocket->state()==QAbstractSocket::ConnectingState)){
+        &&(_tcpSocket->state()==QAbstractSocket::ConnectedState
+            ||_tcpSocket->state()==QAbstractSocket::ConnectingState)){
         _tcpSocket->close();
         _tcpSocket->abort();
         qDebug()<<"----close _tcpSocket----\n";
@@ -134,19 +137,19 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
                       "Data[size:%8 (0x%9)]: %10 \n"
                       "Data hex: %11 \n"
                       "JSON[size:%12]: %13")
-            .arg(getCurrentDateTime())
-            .arg(sendCommand)
-            .arg(QString::number(sendCommand,16))
-            .arg(_port)
-            .arg(number)
-            .arg(QString::number(number,16))
-            .arg(hexToQString(tempA.left(16).toHex()))
-            .arg(sendData.size())
-            .arg(QString::number(sendData.size(),16))
-            .arg(QString(sendData))
-            .arg(dataHex)
-            .arg(jsonSize)
-            .arg(QString(jsonData));
+                       .arg(getCurrentDateTime())
+                       .arg(sendCommand)
+                       .arg(QString::number(sendCommand,16))
+                       .arg(_port)
+                       .arg(number)
+                       .arg(QString::number(number,16))
+                       .arg(hexToQString(tempA.left(16).toHex()))
+                       .arg(sendData.size())
+                       .arg(QString::number(sendData.size(),16))
+                       .arg(QString(sendData))
+                       .arg(dataHex)
+                       .arg(jsonSize)
+                       .arg(QString(jsonData));
 
     emit sigPrintInfo(info);
     //---------------------------------------
@@ -234,7 +237,7 @@ void SCStatusTcp::receiveTcpReadyRead()
                         if(jsonSize > 0){
                             jsonData =  totalData.mid(0,jsonSize);
                             qDebug()<<">>>>>>>>>>>>>>>>>>>>>>jsonSize:"<<jsonSize
-                                   <<"tempJsonData:"<<QString("[%1]").arg(QString(jsonData));
+                                     <<"tempJsonData:"<<QString("[%1]").arg(QString(jsonData));
                         }
                         byteData =  totalData.mid(jsonSize,data_size - jsonSize);
                         qDebug()<<"jsonData:"<<QString(jsonData)<<"revByteData:"<<QString(byteData)<<"  Hex:"<<byteData.toHex();
@@ -256,18 +259,18 @@ void SCStatusTcp::receiveTcpReadyRead()
                                            "Data[size:%7 (0x%8)]: %9 \n"
                                            "Data hex: %10 \n"
                                            "JSON[size:%11]: %12\n")
-                            .arg(getCurrentDateTime())
-                            .arg(revCommand)
-                            .arg(QString::number(revCommand,16))
-                            .arg(number)
-                            .arg(QString::number(number,16))
-                            .arg(hexToQString(headB.toHex()))
-                            .arg(byteData.size())
-                            .arg(QString::number(byteData.size(),16))
-                            .arg(QString(byteData))
-                            .arg(dataHex)
-                            .arg(jsonData.size())
-                            .arg(QString(jsonData));
+                                       .arg(getCurrentDateTime())
+                                       .arg(revCommand)
+                                       .arg(QString::number(revCommand,16))
+                                       .arg(number)
+                                       .arg(QString::number(number,16))
+                                       .arg(hexToQString(headB.toHex()))
+                                       .arg(byteData.size())
+                                       .arg(QString::number(byteData.size(),16))
+                                       .arg(QString(byteData))
+                                       .arg(dataHex)
+                                       .arg(jsonData.size())
+                                       .arg(QString(jsonData));
 
                     emit sigPrintInfo(info);
                     int msTime = _time.elapsed();

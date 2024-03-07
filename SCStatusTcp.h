@@ -1,7 +1,6 @@
 #ifndef SCStatusTcp_H
 #define SCStatusTcp_H
 
-
 #include <QTcpSocket>
 #include <QObject>
 #include <QElapsedTimer>
