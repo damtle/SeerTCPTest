@@ -4,7 +4,7 @@
 
 #include <QTcpSocket>
 #include <QObject>
-#include <QTime>
+#include <QElapsedTimer>
 
 class SCStatusTcp : public QObject
 {
@@ -22,11 +22,11 @@ public:
     bool writeTcpData(uint16_t sendCommand,
                       const QByteArray &jsonData,
                       const QByteArray &sendData,
-                      uint16_t &number);
+                      uint16_t &number, uint8_t byte15);
 
     QTcpSocket *tcpSocket() const;
 
-    QTime time() const;
+    QElapsedTimer time() const;
 
     int connectHost(const QString &ip, quint16 port);
     QString getCurrentDateTime() const;
@@ -48,7 +48,7 @@ private:
     uint16_t _number;//序号
 
     QByteArray _lastMessage;//存放所有读取的数据
-    QTime _time;//用来监测时间
+    QElapsedTimer _time;//用来监测时间
 
     int _oldSendCommand;
     int _oldNumber;

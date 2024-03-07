@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1010</width>
-    <height>705</height>
+    <width>1045</width>
+    <height>853</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,13 +164,6 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_sendCommand">
-                <property name="text">
-                 <string>1100</string>
-                </property>
-               </widget>
-              </item>
               <item row="3" column="0">
                <widget class="QLabel" name="label_4">
                 <property name="text">
@@ -178,10 +171,34 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="lineEdit_number">
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_8">
                 <property name="text">
-                 <string>0</string>
+                 <string>Byte 15:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="spinBox_byte15">
+                <property name="maximum">
+                 <number>255</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="spinBox_sendCommand">
+                <property name="maximum">
+                 <number>66535</number>
+                </property>
+                <property name="value">
+                 <number>1100</number>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QSpinBox" name="spinBox_number">
+                <property name="maximum">
+                 <number>66535</number>
                 </property>
                </widget>
               </item>

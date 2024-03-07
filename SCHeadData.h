@@ -37,7 +37,8 @@ public:
                 uint8_t* data = NULL,
                 int size = 0,
                 uint16_t jsonSize = 0,
-                uint16_t number = 0x00){
+                uint16_t number = 0x00,
+                uint8_t byte15 = 0){
 
         m_header.m_header = 0x5A;
         m_header.m_version = 0x01;
@@ -61,6 +62,7 @@ public:
             m_header.m_reserved[2] = u2;
             m_header.m_reserved[3] = u3;
         }
+        m_header.m_reserved[4] = byte15;
         if (data != NULL){
             memcpy(m_data, data, size);
         }

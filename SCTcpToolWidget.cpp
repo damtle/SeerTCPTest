@@ -23,13 +23,17 @@ SCTcpToolWidget::SCTcpToolWidget(QWidget *parent) :
     connect(_scStatusTcp,SIGNAL(sigChangedText(bool,int,QByteArray,QByteArray,int,int)),
             this,SLOT(slotChangedText(bool,int,QByteArray,QByteArray,int,int)));
     //ip正则.
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    QRegularExpression regExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
+    auto ev = new QRegularExpressionValidator(regExp,ui->lineEdit_ip);
+    ui->lineEdit_ip->setValidator(ev);
+#else
     QRegExp regExp("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     QRegExpValidator *ev = new QRegExpValidator(regExp);
     ui->lineEdit_ip->setValidator(ev);
-    //0-65535
-    QIntValidator *intV = new QIntValidator(0,65535);
-    ui->lineEdit_number->setValidator(intV);
-    ui->lineEdit_sendCommand->setValidator(intV);
+#endif
+    //0-65535,已在.ui中约束
+    // ui->spinBox_number
     ui->textEdit_info->document()->setMaximumBlockCount(1000);
     on_checkBox_timeOut_clicked(true);
 }
@@ -87,7 +91,7 @@ void SCTcpToolWidget::stateChanged(QAbstractSocket::SocketState state)
         info = "QAbstractSocket::ConnectedState \n";
         ui->pushButton_connect->setText(tr("Disconnect"));
     }
-        break;
+    break;
     case QAbstractSocket::BoundState:
         info = "QAbstractSocket::BoundState";
         break;
@@ -101,10 +105,10 @@ void SCTcpToolWidget::stateChanged(QAbstractSocket::SocketState state)
         break;
     }
     ui->textEdit_info->append(QString("%1 IP:%2:%3 %4")
-                              .arg(_scStatusTcp->getCurrentDateTime())
-                              .arg(ui->lineEdit_ip->text())
-                              .arg(ui->comboBox_port->currentText())
-                              .arg(info));
+                                  .arg(_scStatusTcp->getCurrentDateTime())
+                                  .arg(ui->lineEdit_ip->text())
+                                  .arg(ui->comboBox_port->currentText())
+                                  .arg(info));
 }
 /** tcp槽 返回tcp错误.
  * @brief SCTcpToolWidget::receiveTcpError
@@ -113,10 +117,10 @@ void SCTcpToolWidget::stateChanged(QAbstractSocket::SocketState state)
 void SCTcpToolWidget::receiveTcpError(QAbstractSocket::SocketError error)
 {
     ui->textEdit_info->append(QString("%1  connect error[%2]: IP:%3:%4")
-                              .arg(_scStatusTcp->getCurrentDateTime())
-                              .arg(error)
-                              .arg(ui->lineEdit_ip->text())
-                              .arg(ui->comboBox_port->currentText()));
+                                  .arg(_scStatusTcp->getCurrentDateTime())
+                                  .arg(error)
+                                  .arg(ui->lineEdit_ip->text())
+                                  .arg(ui->comboBox_port->currentText()));
     ui->comboBox_port->setEnabled(true);
     ui->pushButton_connect->setText(tr("Connect"));
 }
@@ -127,10 +131,10 @@ void SCTcpToolWidget::receiveTcpError(QAbstractSocket::SocketError error)
 void SCTcpToolWidget::on_pushButton_send_clicked()
 {
     if(_scStatusTcp->tcpSocket()
-            && _scStatusTcp->tcpSocket()->state()==QAbstractSocket::ConnectedState)
+        && _scStatusTcp->tcpSocket()->state()==QAbstractSocket::ConnectedState)
     {
         //报头数据类型.
-        uint16_t sendCommand = ui->lineEdit_sendCommand->text().toInt();
+        uint16_t sendCommand = ui->spinBox_sendCommand->text().toInt();
         //数据区数据.
         QString sendDataStr = ui->textEdit_sendData->toPlainText();
         QByteArray sendData = sendDataStr.toLatin1();
@@ -151,19 +155,20 @@ void SCTcpToolWidget::on_pushButton_send_clicked()
             }
         }
         //序号.
-        uint16_t number = ui->lineEdit_number->text().toInt();
+        uint16_t number = ui->spinBox_number->value();
+        uint8_t byte15 = ui->spinBox_byte15->value();
         //清理接收数据区域.
         ui->textEdit_revData->clear();
         //发送数据.
-        if(!_scStatusTcp->writeTcpData(sendCommand,jsonData,sendData,number)){
+        if(!_scStatusTcp->writeTcpData(sendCommand,jsonData,sendData,number,byte15)){
             slotPrintInfo(tr("<font color=\"red\">"
                              "%1--------- Send error----------\n"
                              "Type:%2  \n"
                              "Error: %3"
                              "</font> ")
-                          .arg(_scStatusTcp->getCurrentDateTime())
-                          .arg(sendCommand)
-                          .arg(_scStatusTcp->lastError()));
+                              .arg(_scStatusTcp->getCurrentDateTime())
+                              .arg(sendCommand)
+                              .arg(_scStatusTcp->lastError()));
         }
     }else{
         //FIX </font> 后面的空格是一定要的，不然会串色.
@@ -197,12 +202,12 @@ void SCTcpToolWidget::slotChangedText(bool isOk,int revCommand,
                                            "Number: %4 (0x%5)\t\n\n"
                                            "Waste time: %6 ms \t\n\n"
                                            "Data Size: %7")
-                                   .arg(revCommand)
-                                   .arg(QString::number(revCommand,16))
-                                   .arg(number)
-                                   .arg(QString::number(number,16))
-                                   .arg(msTime)
-                                   .arg(dataSize));
+                                       .arg(revCommand)
+                                       .arg(QString::number(revCommand,16))
+                                       .arg(number)
+                                       .arg(QString::number(number,16))
+                                       .arg(msTime)
+                                       .arg(dataSize));
         //保存到SeerReceive.temp文件.
         if(ui->checkBox_saveFile->isChecked()){
             QFile file("./SeerReceive.temp");
@@ -220,13 +225,13 @@ void SCTcpToolWidget::slotChangedText(bool isOk,int revCommand,
                          "Type:%2  \n"
                          "Error: %3"
                          "</font> ")
-                      .arg(_scStatusTcp->getCurrentDateTime())
-                      .arg(revCommand)
-                      .arg(_scStatusTcp->lastError()));
+                          .arg(_scStatusTcp->getCurrentDateTime())
+                          .arg(revCommand)
+                          .arg(_scStatusTcp->lastError()));
 
         ui->textEdit_revData->setText(QString(revData));
         ui->label_revText->setText(QString("Receive error: %1 \t\n")
-                                   .arg(_scStatusTcp->lastError()));
+                                       .arg(_scStatusTcp->lastError()));
     }
 }
 /** 打印信息.
@@ -243,9 +248,9 @@ void SCTcpToolWidget::slotPrintInfo(QString info)
  */
 void SCTcpToolWidget::on_pushButton_clearInfo_clicked()
 {
-//    if(ui->textEdit_info->document()){
-//        ui->textEdit_info->document()->clear();
-//    }
+    //    if(ui->textEdit_info->document()){
+    //        ui->textEdit_info->document()->clear();
+    //    }
     ui->textEdit_info->clear();
 }
 
@@ -320,8 +325,8 @@ void SCTcpToolWidget::on_toolButton_ch_clicked()
 {
     if(!_translator){
         _translator = new QTranslator(this);
-        _translator->load(QString(":/resource/Ch.qm"));
-        qApp->installTranslator(_translator);
+        if(_translator->load(QString(":/resource/Ch.qm")))
+            qApp->installTranslator(_translator);
     }
     ui->retranslateUi(this);
 }

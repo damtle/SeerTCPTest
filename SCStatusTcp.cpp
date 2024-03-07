@@ -1,6 +1,6 @@
 ﻿#include "SCStatusTcp.h"
 #include "SCHeadData.h"
-
+#include "qdatetime.h"
 
 SCStatusTcp::SCStatusTcp(QObject *parent) : QObject(parent),
     _tcpSocket(Q_NULLPTR)
@@ -74,7 +74,8 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
 bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
                                const QByteArray &jsonData,
                                const QByteArray &sendData,
-                               uint16_t &number)
+                               uint16_t &number,
+                               uint8_t byte15)
 {
     //已发送.
     _oldSendCommand = sendCommand;
@@ -102,7 +103,7 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
         headSize = sizeof(SeerHeader);
         headBuf = new uint8_t[headSize];
         seerData = (SeerData*)headBuf;
-        size = seerData->setData(sendCommand,Q_NULLPTR,0,0,number);
+        size = seerData->setData(sendCommand,Q_NULLPTR,0,0,number,byte15);
     }else{
         std::string totalDataStr = totalData.toStdString();
         headSize = sizeof(SeerHeader) + totalDataStr.length();
@@ -112,7 +113,7 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
                                  (uint8_t*)totalDataStr.data(),
                                  totalDataStr.length(),
                                  jsonSize,
-                                 number);
+                                 number,byte15);
     }
     //---------------------------------------
     //发送的所有数据.
@@ -314,7 +315,7 @@ QTcpSocket *SCStatusTcp::tcpSocket() const
     return _tcpSocket;
 }
 
-QTime SCStatusTcp::time() const
+QElapsedTimer SCStatusTcp::time() const
 {
     return _time;
 }
