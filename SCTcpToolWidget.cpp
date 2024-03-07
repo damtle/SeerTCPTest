@@ -134,7 +134,7 @@ void SCTcpToolWidget::on_pushButton_send_clicked()
         && _scStatusTcp->tcpSocket()->state()==QAbstractSocket::ConnectedState)
     {
         //报头数据类型.
-        uint16_t sendCommand = ui->spinBox_sendCommand->text().toInt();
+        uint16_t sendCommand = ui->spinBox_sendCommand->value();
         //数据区数据.
         QString sendDataStr = ui->textEdit_sendData->toPlainText();
         QByteArray sendData = sendDataStr.toLatin1();
