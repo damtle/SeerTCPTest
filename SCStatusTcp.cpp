@@ -20,6 +20,7 @@ SCStatusTcp::~SCStatusTcp()
  */
 void SCStatusTcp::releaseTcpSocket()
 {
+    // 若socket存在且打开，则关闭并终止
     if(_tcpSocket){
 
         if(_tcpSocket->isOpen()){
@@ -37,6 +38,7 @@ void SCStatusTcp::releaseTcpSocket()
 int SCStatusTcp::connectHost(const QString&ip,quint16 port)
 {
     int ret = 0;
+    // 不存在socket则先创建
     if(!_tcpSocket){
         _tcpSocket = new QTcpSocket(this);
         //无代理，不加这行会导致开启 vpn 无法连接局域网设备.
@@ -47,14 +49,18 @@ int SCStatusTcp::connectHost(const QString&ip,quint16 port)
         connect(_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this->parent(),
                 SLOT(receiveTcpError(QAbstractSocket::SocketError)));
     }
+
+    // 检查socket的状态，若有，则中断建立新连接
     if(_tcpSocket->isOpen()
         &&(_tcpSocket->state()==QAbstractSocket::ConnectedState
             ||_tcpSocket->state()==QAbstractSocket::ConnectingState)){
+        // socket打开，并处于《连接》或《正在连接》的状态，返回1
         _tcpSocket->close();
         _tcpSocket->abort();
         qDebug()<<"----close _tcpSocket----\n";
         ret = 1;
     }else{
+        // socket关闭，连接到指定端口，返回0
         _tcpSocket->connectToHost(ip,port,QTcpSocket::ReadWrite,QTcpSocket::IPv4Protocol);
         _ip = ip;
         _port = port;
@@ -80,29 +86,29 @@ bool SCStatusTcp::writeTcpData(uint16_t sendCommand,
                                uint16_t &number,
                                uint8_t byte15)
 {
-    //已发送.
+    //已发送，保存命令和编号
     _oldSendCommand = sendCommand;
     _oldNumber = number;
-    //数据区长度.
-    int size = 0;
-    //报文头部数据.
-    uint8_t* headBuf = Q_NULLPTR;
+
+    // 初始化本地变量
+    int size = 0;           //数据区长度.
+    uint8_t* headBuf = Q_NULLPTR;   //报文头部数据.
     int headSize = 0;
-    //发送的全部数据.
-    SeerData* seerData = Q_NULLPTR;
-    //开始计时.
-    _time.start();
+    SeerData* seerData = Q_NULLPTR; //发送的全部数据.
+    _time.start();          //开始计时，用于超时检测
 
     //json数据
     uint16_t jsonSize = 0;
     if(!jsonData.isEmpty()){
         jsonSize = jsonData.toStdString().length();
     }
+    // 将JSON数据和发送的数据合并为一个字节数组.
     QByteArray totalData = jsonData + sendData;
 
 
     //根据数据区数据进行数据转换.
     if(totalData.isEmpty()){
+        // 如果合并后的数据为空，设置头部大小并创建头部数据缓冲区。
         headSize = sizeof(SeerHeader);
         headBuf = new uint8_t[headSize];
         seerData = (SeerData*)headBuf;
