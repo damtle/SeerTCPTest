@@ -10,7 +10,6 @@ SCTcpToolWidget::SCTcpToolWidget(QWidget *parent) :
     ui(new Ui::SCTcpToolWidget)
 {
     ui->setupUi(this);
-
     ui->pushButton_clearInfo->setObjectName("pushButton_green");
     ui->pushButton_connect->setObjectName("pushButton_green");
     ui->pushButton_send->setObjectName("pushButton_green");
@@ -89,6 +88,7 @@ void SCTcpToolWidget::stateChanged(QAbstractSocket::SocketState state)
     case QAbstractSocket::ConnectedState:
     {
         info = "QAbstractSocket::ConnectedState \n";
+        ui->ipList->addItem("Item");
         ui->pushButton_connect->setText(tr("Disconnect"));
     }
     break;

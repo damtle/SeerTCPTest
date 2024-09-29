@@ -59,6 +59,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
+        <widget class="QListWidget" name="ipList"/>
+       </item>
+       <item>
         <widget class="QSplitter" name="splitter_2">
          <property name="lineWidth">
           <number>0</number>
